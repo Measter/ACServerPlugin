@@ -57,18 +57,18 @@ namespace AcPluginLib
             while( true )
             {
                 var bytes = server.Receive( ref recievePoint );
-                m_logger.Trace( "Recieved data packet." );
+                m_logger.Debug( "Recieved data packet." );
                 m_logger.Trace( $"Data packet contents: {bytes}" );
 
                 if( m_config.Forward.HasValue )
                 {
-                    m_logger.Trace( "Forwarding data packet" );
+                    m_logger.Debug( "Forwarding data packet" );
                     server.Send( bytes, bytes.Length, m_config.Forward.Value.DataPort );
                 }
                 
                 var br = new BinaryReader( new MemoryStream( bytes ) );
                 var packetType = (ACSMessage) br.ReadByte();
-                m_logger.Trace( $"Packet type: {packetType}" );
+                m_logger.Debug( $"Packet type: {packetType}" );
 
                 switch( packetType )
                 {
