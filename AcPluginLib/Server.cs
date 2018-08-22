@@ -21,7 +21,7 @@ namespace AcPluginLib
             m_config = config;
         }
 
-        public void AddingNewEventHandler( ACEventHandler handler )
+        public void AddEventHandler( ACEventHandler handler )
         {
             if( handler == null ) throw new ArgumentNullException( nameof( handler ) );
             m_handlers.Add( handler );

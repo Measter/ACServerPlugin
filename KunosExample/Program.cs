@@ -21,8 +21,8 @@ namespace KunosExample
             );
 
             var server = new Server( cfg );
-            server.AddingNewEventHandler( new PrintHandler() );
-            server.AddingNewEventHandler( new ResponseHandler() );
+            server.AddEventHandler( new PrintHandler() );
+            server.AddEventHandler( new ResponseHandler() );
 
             server.Run();
         }
