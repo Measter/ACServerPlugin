@@ -58,7 +58,6 @@ namespace AcPluginLib
             {
                 var bytes = server.Receive( ref recievePoint );
                 m_logger.Debug( "Recieved data packet." );
-                m_logger.Trace( $"Data packet contents: {bytes}" );
 
                 if( m_config.Forward.HasValue )
                 {
@@ -165,7 +164,6 @@ namespace AcPluginLib
                     var bytes = forwardClient.Receive( ref recievePoint );
                     server.Send( bytes, bytes.Length, m_config.Server.CommandPoint );
                     m_logger.Debug( "Message forwarded" );
-                    m_logger.Trace( $"Data packet forwarded: {bytes}" );
                 }
             }
             else
