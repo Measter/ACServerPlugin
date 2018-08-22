@@ -9,6 +9,8 @@ namespace AcPluginLib
 {
     public class Server
     {
+        private static readonly NLog.Logger m_logger = NLog.LogManager.GetCurrentClassLogger();
+
         private const uint IOC_IN = 0x80000000;
         private const uint IOC_VENDOR = 0x18000000;
         private const uint SIO_UDP_CONNRESET = IOC_IN | IOC_VENDOR | 12;
@@ -23,35 +25,50 @@ namespace AcPluginLib
 
         public void AddEventHandler( ACEventHandler handler )
         {
+            m_logger.Debug( $"Adding event handler: {handler}" );
             if( handler == null ) throw new ArgumentNullException( nameof( handler ) );
             m_handlers.Add( handler );
         }
 
         public void Run()
         {
+            m_logger.Info( $"Opening UDP client at {m_config.Server.DataPort}" );
             var server = new UdpClient( m_config.Server.DataPort );
 
             if( m_config.SuppressSocketError )
+            {
+                m_logger.Debug( "Suppressing socket error" );
                 SuppressSocketError( server );
+            }
 
             if( m_config.Forward.HasValue )
             {
+                m_logger.Info( $"Enabling forwarding from {m_config.Forward.Value.CommandPoint}" );
                 var commandThread = new Thread( () => CommandForwardTask( server ) );
                 commandThread.Start();
             }
 
             var recievePoint = m_config.Server.CommandPoint;
+            m_logger.Debug( "Creating Commander" );
             var commander = new Commander( server, m_config.Server );
+
+            m_logger.Info( "Waiting for messages from server" );
 
             while( true )
             {
                 var bytes = server.Receive( ref recievePoint );
+                m_logger.Trace( "Recieved data packet." );
+                m_logger.Trace( $"Data packet contents: {bytes}" );
 
                 if( m_config.Forward.HasValue )
+                {
+                    m_logger.Trace( "Forwarding data packet" );
                     server.Send( bytes, bytes.Length, m_config.Forward.Value.DataPort );
-
+                }
+                
                 var br = new BinaryReader( new MemoryStream( bytes ) );
                 var packetType = (ACSMessage) br.ReadByte();
+                m_logger.Trace( $"Packet type: {packetType}" );
 
                 switch( packetType )
                 {
@@ -112,6 +129,7 @@ namespace AcPluginLib
                         break;
                     case ACSMessage.Error:
                         var err = Parsing.ReadUnicodeString( br );
+                        m_logger.Info( $"Error recieved from server: {err}" );
                         foreach( var handler in m_handlers )
                             handler.OnError( commander, err );
                         break;
@@ -130,17 +148,29 @@ namespace AcPluginLib
         {
             if( m_config.Forward != null )
             {
+                m_logger.Debug( $"Opening forawding client to {m_config.Forward.Value.CommandPoint}" );
                 var forwardClient = new UdpClient(m_config.Forward.Value.CommandPoint);
+
                 if( m_config.SuppressSocketError )
+                {
+                    m_logger.Debug( "Suppressing socket error for forwarding client" );
                     SuppressSocketError( forwardClient );
+                }
 
                 var recievePoint = m_config.Forward.Value.CommandPoint;
 
                 while( true )
                 {
+                    m_logger.Debug( "Awaiting message to forward." );
                     var bytes = forwardClient.Receive( ref recievePoint );
                     server.Send( bytes, bytes.Length, m_config.Server.CommandPoint );
+                    m_logger.Debug( "Message forwarded" );
+                    m_logger.Trace( $"Data packet forwarded: {bytes}" );
                 }
+            }
+            else
+            {
+                m_logger.Debug( "Forwarding task function called with a null ServerPoint" );
             }
         }
 
