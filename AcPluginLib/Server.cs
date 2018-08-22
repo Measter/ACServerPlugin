@@ -25,14 +25,14 @@ namespace AcPluginLib
 
         public void AddEventHandler( ACEventHandler handler )
         {
-            m_logger.Debug( $"Adding event handler: {handler}" );
+            m_logger.Debug( "Adding event handler: {0}", handler );
             if( handler == null ) throw new ArgumentNullException( nameof( handler ) );
             m_handlers.Add( handler );
         }
 
         public void Run()
         {
-            m_logger.Info( $"Opening UDP client at {m_config.Server.DataPort}" );
+            m_logger.Info( "Opening UDP client at {0}", m_config.Server.DataPort );
             var server = new UdpClient( m_config.Server.DataPort );
 
             if( m_config.SuppressSocketError )
@@ -43,7 +43,7 @@ namespace AcPluginLib
 
             if( m_config.Forward.HasValue )
             {
-                m_logger.Info( $"Enabling forwarding from {m_config.Forward.Value.CommandPoint}" );
+                m_logger.Info( "Enabling forwarding from {0}", m_config.Forward.Value.CommandPoint );
                 var commandThread = new Thread( () => CommandForwardTask( server ) );
                 commandThread.Start();
             }
@@ -67,7 +67,7 @@ namespace AcPluginLib
                 
                 var br = new BinaryReader( new MemoryStream( bytes ) );
                 var packetType = (ACSMessage) br.ReadByte();
-                m_logger.Debug( $"Packet type: {packetType}" );
+                m_logger.Debug( "Packet type: {0}", packetType );
 
                 switch( packetType )
                 {
@@ -128,7 +128,7 @@ namespace AcPluginLib
                         break;
                     case ACSMessage.Error:
                         var err = Parsing.ReadUnicodeString( br );
-                        m_logger.Info( $"Error recieved from server: {err}" );
+                        m_logger.Info( "Error recieved from server: {0}", err );
                         foreach( var handler in m_handlers )
                             handler.OnError( commander, err );
                         break;
@@ -147,7 +147,7 @@ namespace AcPluginLib
         {
             if( m_config.Forward != null )
             {
-                m_logger.Debug( $"Opening forawding client to {m_config.Forward.Value.CommandPoint}" );
+                m_logger.Debug( "Opening forawding client to {0}", m_config.Forward.Value.CommandPoint );
                 var forwardClient = new UdpClient(m_config.Forward.Value.CommandPoint);
 
                 if( m_config.SuppressSocketError )
