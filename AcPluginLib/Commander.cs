@@ -7,6 +7,8 @@ namespace AcPluginLib
 {
     public class Commander
     {
+        private static readonly NLog.Logger m_logger = NLog.LogManager.GetCurrentClassLogger();
+
         private const int CHUNK_LENGTH = 104;
 
         private readonly UdpClient m_server;
@@ -20,28 +22,34 @@ namespace AcPluginLib
 
         private static void WriteUnicodeString( BinaryWriter bw, string message )
         {
+            m_logger.Debug( $"Writing UTF32 string" );
+            m_logger.Trace( $"String contents: {message}" );
             bw.Write( (byte)message.Length );
             bw.Write( Encoding.UTF32.GetBytes( message ) );
         }
 
         public void SendChat( byte carId, string message )
         {
+            m_logger.Debug( $"Sending chat message to car {carId}" );
+            m_logger.Trace( $"Message contents: {message}" );
             var buffer = new byte[419];
             using( var bw = new BinaryWriter( new MemoryStream( buffer ) ) )
             {
-
                 var numChunks = (int) Math.Ceiling( (float) message.Length / CHUNK_LENGTH );
+
+                m_logger.Trace( $"Splitting message into {numChunks} chunks" );
 
                 for( int c = 0; c < numChunks; c++ )
                 {
                     var start = c * CHUNK_LENGTH;
                     var end = Math.Min( start + CHUNK_LENGTH, message.Length );
                     var len = end - start;
-
+                    
                     bw.Write( (byte) ACSCommand.SendChat );
                     bw.Write( carId );
 
                     var chunk = message.Substring( start, len );
+                    m_logger.Trace( $"Chunk {c} - Start: {start}, Length: {len}, Contents: {chunk}" );
                     WriteUnicodeString( bw, chunk );
 
                     m_server.Send( buffer, (int) bw.BaseStream.Length, m_config.CommandPoint );
@@ -53,6 +61,7 @@ namespace AcPluginLib
 
         public void SetRealtimeInterval( TimeSpan interval )
         {
+            m_logger.Debug( $"Setting realtime position interval to {interval.TotalMilliseconds}ms" );
             var buffer = new byte[3];
             using( var bw = new BinaryWriter( new MemoryStream(buffer) ) )
             {
@@ -65,6 +74,7 @@ namespace AcPluginLib
 
         public void GetCarInfo( byte carId )
         {
+            m_logger.Debug( $"Car info request for car {carId}" );
             var buffer = new byte[3];
             using( var bw = new BinaryWriter( new MemoryStream( buffer ) ) )
             {
@@ -77,6 +87,7 @@ namespace AcPluginLib
 
         public void GetSessionInfoCurrent()
         {
+            m_logger.Debug( "Current session info request" );
             var buffer = new byte[3];
             using( var bw = new BinaryWriter( new MemoryStream( buffer ) ) )
             {
@@ -89,6 +100,7 @@ namespace AcPluginLib
 
         public void GetSessionInfoOther(Int16 id)
         {
+            m_logger.Debug( $"Session info request for session {id}" );
             var buffer = new byte[3];
             using( var bw = new BinaryWriter( new MemoryStream( buffer ) ) )
             {
@@ -101,6 +113,13 @@ namespace AcPluginLib
 
         public void SetSessionInfo( byte sessionId, string name, SessionType sessionType, UInt32 lengthSec, UInt32 lengthLaps, UInt32 waitTime )
         {
+            m_logger.Debug( $"Setting session info for session {sessionId}" );
+            m_logger.Trace( $"    Name: {name}" );
+            m_logger.Trace( $"    Type: {sessionType}" );
+            m_logger.Trace( $"    Length(Seconds): {lengthSec}" );
+            m_logger.Trace( $"    Length(Laps): {lengthLaps}" );
+            m_logger.Trace( $"    Wait Time: {waitTime}" );
+
             var buffer = new byte[100];
             var trimmedName = name.Substring( 0, Math.Min( 20, name.Length ) );
             
@@ -122,6 +141,7 @@ namespace AcPluginLib
 
         public void KickDriver( byte carId )
         {
+            m_logger.Debug( $"Kick driver request for car {carId}" );
             var buffer = new byte[2];
             using( var bw = new BinaryWriter( new MemoryStream( buffer ) ) )
             {
@@ -134,6 +154,7 @@ namespace AcPluginLib
 
         public void NextSession()
         {
+            m_logger.Debug( "Next session request" );
             var buffer = new byte[1];
             using( var bw = new BinaryWriter( new MemoryStream( buffer ) ) )
             {
@@ -145,6 +166,7 @@ namespace AcPluginLib
 
         public void RestartSession()
         {
+            m_logger.Debug( "Restart session request" );
             var buffer = new byte[1];
             using( var bw = new BinaryWriter( new MemoryStream( buffer ) ) )
             {
@@ -156,6 +178,7 @@ namespace AcPluginLib
 
         public void SetBallast(byte carId, byte amount)
         {
+            m_logger.Debug( $"Set ballast to {amount}kg for car {carId}" );
             var clampedAmount = Math.Min( amount, (byte)150 );
             var message = $"/ballast {carId} {clampedAmount}";
             SendAdminCommand( message );
@@ -163,6 +186,7 @@ namespace AcPluginLib
 
         public void SetRestrictor( byte carId, byte amount )
         {
+            m_logger.Debug( $"Set restrictor to {amount}% for car {carId}" );
             var clampedAmount = Math.Min( amount, (byte) 100 );
             var message = $"/restrictor {carId} {clampedAmount}";
             SendAdminCommand( message );
@@ -170,12 +194,15 @@ namespace AcPluginLib
 
         public void BanDriver( byte carId )
         {
+            m_logger.Debug( $"Ban driver request for car {carId}" );
             var message = $"/ban_id {carId}";
             SendAdminCommand( message );
         }
 
         public void SendAdminCommand( string message )
         {
+            m_logger.Debug( "Admin command" );
+            m_logger.Trace( $"Command contents: {message}" );
             var buffer = new byte[255];
             using( var bw = new BinaryWriter( new MemoryStream( buffer ) ) )
             {
@@ -188,6 +215,8 @@ namespace AcPluginLib
 
         public void BroadcastMessage( string message )
         {
+            m_logger.Debug( $"Sending broadcast message" );
+            m_logger.Trace( $"Message contents: {message}" );
             var buffer = new byte[255];
             using( var bw = new BinaryWriter( new MemoryStream( buffer ) ) )
             {
