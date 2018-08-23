@@ -18,6 +18,8 @@ namespace AcPluginLib
         public Vector3F? VelocityVector { get; private set; }
         public double? Speed { get; private set; }
         public float? SplinePosition { get; internal set; }
+        public byte Gear { get; internal set; }
+        public UInt16 EngineRPM { get; internal set; }
 
         public Driver( string guid )
         {
@@ -46,6 +48,8 @@ namespace AcPluginLib
             builder.AppendFormat( "    {0} = {1}", nameof( VelocityVector ), VelocityVector.ToString() ).AppendLine();
             builder.AppendFormat( "    {0} = {1}", nameof( Speed ), Speed.ToString() ).AppendLine();
             builder.AppendFormat( "    {0} = {1}", nameof( SplinePosition ), SplinePosition.ToString() ).AppendLine();
+            builder.AppendFormat( "    {0} = {1}", nameof( Gear ), Gear.ToString() ).AppendLine();
+            builder.AppendFormat( "    {0} = {1}", nameof( EngineRPM ), EngineRPM.ToString() ).AppendLine();
             builder.AppendFormat( "}}" ).AppendLine();
             return builder.ToString();
         }
