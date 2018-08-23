@@ -18,9 +18,22 @@ namespace AcPluginLib
         private readonly Config m_config;
         private readonly List<ACEventHandler> m_handlers = new List<ACEventHandler>();
 
+        private readonly DriverDB m_driverDB;
+        private readonly DriverHandler m_driverHandler;
+
         public Server( Config config )
         {
             m_config = config;
+            m_driverHandler = new DriverHandler();
+            m_driverDB = new DriverDB( m_driverHandler );
+        }
+
+        public DriverDB GetDriverHandler()
+        {
+            if( !m_handlers.Contains( m_driverHandler ) )
+                m_handlers.Add( m_driverHandler );
+
+            return m_driverDB;
         }
 
         public void AddEventHandler( ACEventHandler handler )
