@@ -21,6 +21,8 @@ namespace AcPluginLib
         private readonly DriverDB m_driverDB;
         private readonly DriverHandler m_driverHandler;
 
+        private bool m_isKnownSession = false;
+
         public Server( Config config )
         {
             m_config = config;
@@ -82,11 +84,18 @@ namespace AcPluginLib
                 var packetType = (ACSMessage) br.ReadByte();
                 m_logger.Debug( "Packet type: {0}", packetType );
 
+                if( !m_isKnownSession && packetType != ACSMessage.SessionInfo && packetType != ACSMessage.NewSession )
+                {
+                    m_logger.Info( "Unknown session, requesting info." );
+                    commander.GetSessionInfoCurrent();
+                }
+
                 switch( packetType )
                 {
                     case ACSMessage.NewSession:
                         var nsInfo = SessionInfo.Parse( br );
                         m_logger.Trace( "Packet contents: {0}", nsInfo );
+                        m_isKnownSession = true;
                         foreach( var handler in m_handlers )
                             handler.OnNewSession( commander, nsInfo );
                         break;
@@ -147,6 +156,7 @@ namespace AcPluginLib
                     case ACSMessage.SessionInfo:
                         var siInfo = SessionInfo.Parse( br );
                         m_logger.Trace( "Packet contents: {0}", siInfo );
+                        m_isKnownSession = true;
                         foreach( var handler in m_handlers )
                             handler.OnSessionInfo( commander, siInfo );
                         break;
