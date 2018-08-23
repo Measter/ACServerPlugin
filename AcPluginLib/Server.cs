@@ -31,7 +31,7 @@ namespace AcPluginLib
         public DriverDB GetDriverHandler()
         {
             if( !m_handlers.Contains( m_driverHandler ) )
-                m_handlers.Add( m_driverHandler );
+                AddEventHandler( m_driverHandler );
 
             return m_driverDB;
         }
