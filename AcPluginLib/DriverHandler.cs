@@ -32,6 +32,9 @@ namespace AcPluginLib
 
         public override void OnCarInfo( Commander cmdr, CarInfo info )
         {
+            if( info.DriverGuid.Length == 0 )
+                return;
+
             var driver = GetFromGUID( info.DriverGuid );
 
             var oldID = driver.CarId;
@@ -92,6 +95,9 @@ namespace AcPluginLib
 
         public override void OnConnectionClosed( Commander cmdr, ConnectionInfo info )
         {
+            if( info.DriverGuid.Length == 0 )
+                return;
+
             var driver = GetFromGUID( info.DriverGuid );
 
             var oldID = driver.CarId;
@@ -124,6 +130,9 @@ namespace AcPluginLib
 
         public override void OnNewConnection( Commander cmdr, ConnectionInfo info )
         {
+            if( info.DriverGuid.Length == 0 )
+                return;
+
             var driver = GetFromGUID( info.DriverGuid );
 
             var oldID = driver.CarId;
@@ -154,6 +163,8 @@ namespace AcPluginLib
                     oldDriverOldID.CarId = null;
                 }
             }
+
+            m_driversFromID[info.CarId] = driver;
         }
 
 
