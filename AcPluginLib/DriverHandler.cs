@@ -46,20 +46,11 @@ namespace AcPluginLib
             driver.CarModel = info.CarModel;
             driver.CarSkin = info.CarSkin;
 
-            if( !driver.IsConnected && m_driversFromID.ContainsKey( info.CarId ) )
-            {
-                m_logger.Info( "Driver {0} is not connected, removing from ID map", info.CarId );
-
-                m_driversFromID.Remove( info.CarId );
-                driver.CarId = null;
-            }
-
-            if( oldID.HasValue && m_driversFromID.TryGetValue( oldID.Value, out Driver oldDriver ) )
+            if( oldID.HasValue && oldID.Value != info.CarId && m_driversFromID.TryGetValue( oldID.Value, out Driver oldDriver ) )
             {
                 m_logger.Debug( "Moving driver from ID {0} to ID  {1}", oldID.Value, info.CarId );
                 m_logger.Trace( "Old driver info: {0}", oldDriver );
                 m_driversFromID.Remove( oldID.Value );
-                m_driversFromID[info.CarId] = driver;
 
                 if( oldDriver.GUID != info.DriverGuid )
                 {
@@ -67,6 +58,8 @@ namespace AcPluginLib
                     oldDriver.CarId = null;
                 }
             }
+
+            m_driversFromID[info.CarId] = driver;
         }
 
         public override void OnCarUpdate( Commander cmdr, CarUpdateInfo info )
@@ -86,17 +79,22 @@ namespace AcPluginLib
 
         public override void OnClientLoaded( Commander cmdr, byte carId )
         {
-            if( !m_driversFromID.ContainsKey( carId ) )
+            if( !m_driversFromID.TryGetValue( carId, out Driver driver ) )
             {
                 m_logger.Info( "Unknown driver {0}, requesting info", carId );
                 cmdr.GetCarInfo( carId );
+                return;
             }
+
+            driver.IsConnected = true;
         }
 
         public override void OnConnectionClosed( Commander cmdr, ConnectionInfo info )
         {
             if( info.DriverGuid.Length == 0 )
                 return;
+
+            m_logger.Debug( "Driver disconnected ({0})", info.DriverGuid );
 
             var driver = GetFromGUID( info.DriverGuid );
 
@@ -133,12 +131,14 @@ namespace AcPluginLib
             if( info.DriverGuid.Length == 0 )
                 return;
 
+            m_logger.Debug( "Driver connected ({0})", info.DriverGuid );
+
             var driver = GetFromGUID( info.DriverGuid );
 
             var oldID = driver.CarId;
 
             driver.Name = info.DriverName;
-            driver.IsConnected = true;
+            driver.IsConnected = false;
             driver.CarId = info.CarId;
             driver.CarModel = info.CarModel;
             driver.CarSkin = info.CarSkin;
@@ -164,6 +164,7 @@ namespace AcPluginLib
                 }
             }
 
+            m_logger.Debug( "Adding driver to ID DB with ID {0}", info.CarId );
             m_driversFromID[info.CarId] = driver;
         }
 
