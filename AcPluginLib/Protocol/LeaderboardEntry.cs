@@ -27,5 +27,17 @@ namespace AcPluginLib.Protocol
                 br.ReadBoolean()
             );
         }
+
+        public override string ToString()
+        {
+            var builder = new System.Text.StringBuilder();
+            builder.AppendFormat( "{0} {{", nameof( LeaderboardEntry ) ).AppendLine();
+            builder.AppendFormat( "    {0} = {1}", nameof( CarId ), CarId.ToString() ).AppendLine();
+            builder.AppendFormat( "    {0} = {1}", nameof( LapTime ), LapTime.ToString() ).AppendLine();
+            builder.AppendFormat( "    {0} = {1}", nameof( Laps ), Laps.ToString() ).AppendLine();
+            builder.AppendFormat( "    {0} = {1}", nameof( HasFinished ), HasFinished.ToString() ).AppendLine();
+            builder.AppendFormat( "}}" ).AppendLine();
+            return builder.ToString();
+        }
     }
 }

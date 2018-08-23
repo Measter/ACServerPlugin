@@ -89,5 +89,29 @@ namespace AcPluginLib.Protocol
                 roadTemp, weather, elaspedMs
             );
         }
+
+        public override string ToString()
+        {
+            var builder = new System.Text.StringBuilder();
+            builder.AppendFormat( "{0} {{", nameof( SessionInfo ) ).AppendLine();
+            builder.AppendFormat( "    {0} = {1}", nameof( Version ), Version.ToString() ).AppendLine();
+            builder.AppendFormat( "    {0} = {1}", nameof( MessageSessionIndex ), MessageSessionIndex.ToString() ).AppendLine();
+            builder.AppendFormat( "    {0} = {1}", nameof( ServerSessionIndex ), ServerSessionIndex.ToString() ).AppendLine();
+            builder.AppendFormat( "    {0} = {1}", nameof( SessionCount ), SessionCount.ToString() ).AppendLine();
+            builder.AppendFormat( "    {0} = {1}", nameof( ServerName ), ServerName.ToString() ).AppendLine();
+            builder.AppendFormat( "    {0} = {1}", nameof( TrackName ), TrackName.ToString() ).AppendLine();
+            builder.AppendFormat( "    {0} = {1}", nameof( TrackLayout ), TrackLayout.ToString() ).AppendLine();
+            builder.AppendFormat( "    {0} = {1}", nameof( SessionName ), SessionName.ToString() ).AppendLine();
+            builder.AppendFormat( "    {0} = {1}", nameof( SessionType ), SessionType.ToString() ).AppendLine();
+            builder.AppendFormat( "    {0} = {1}", nameof( SessionLengthLaps ), SessionLengthLaps.ToString() ).AppendLine();
+            builder.AppendFormat( "    {0} = {1}", nameof( SessionLengthMinutes ), SessionLengthMinutes.ToString() ).AppendLine();
+            builder.AppendFormat( "    {0} = {1}", nameof( WaitTime ), WaitTime.ToString() ).AppendLine();
+            builder.AppendFormat( "    {0} = {1}", nameof( AmbientTemperature ), AmbientTemperature.ToString() ).AppendLine();
+            builder.AppendFormat( "    {0} = {1}", nameof( RoadTemperature ), RoadTemperature.ToString() ).AppendLine();
+            builder.AppendFormat( "    {0} = {1}", nameof( Weather ), Weather.ToString() ).AppendLine();
+            builder.AppendFormat( "    {0} = {1}", nameof( Elapsed ), Elapsed.ToString() ).AppendLine();
+            builder.AppendFormat( "}}" ).AppendLine();
+            return builder.ToString();
+        }
     }
 }

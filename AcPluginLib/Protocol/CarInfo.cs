@@ -36,5 +36,20 @@ namespace AcPluginLib
                 Parsing.ReadUnicodeString( br )
             );
         }
+
+        public override string ToString()
+        {
+            var builder = new System.Text.StringBuilder();
+            builder.AppendFormat( "{0} {{", nameof( CarInfo ) ).AppendLine();
+            builder.AppendFormat( "    {0} = {1}", nameof( CarId ), CarId.ToString() ).AppendLine();
+            builder.AppendFormat( "    {0} = {1}", nameof( IsConnected ), IsConnected.ToString() ).AppendLine();
+            builder.AppendFormat( "    {0} = {1}", nameof( CarModel ), CarModel.ToString() ).AppendLine();
+            builder.AppendFormat( "    {0} = {1}", nameof( CarSkin ), CarSkin.ToString() ).AppendLine();
+            builder.AppendFormat( "    {0} = {1}", nameof( DriverName ), DriverName.ToString() ).AppendLine();
+            builder.AppendFormat( "    {0} = {1}", nameof( DriverTeam ), DriverTeam.ToString() ).AppendLine();
+            builder.AppendFormat( "    {0} = {1}", nameof( DriverGuid ), DriverGuid.ToString() ).AppendLine();
+            builder.AppendFormat( "}}" ).AppendLine();
+            return builder.ToString();
+        }
     }
 }

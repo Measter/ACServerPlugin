@@ -48,5 +48,19 @@ namespace AcPluginLib.Protocol
                 Vector3F.Parse( br )
             );
         }
+
+        public override string ToString()
+        {
+            var builder = new System.Text.StringBuilder();
+            builder.AppendFormat( "{0} {{", nameof( ClientEventInfo ) ).AppendLine();
+            builder.AppendFormat( "    {0} = {1}", nameof( CollisionType ), CollisionType.ToString() ).AppendLine();
+            builder.AppendFormat( "    {0} = {1}", nameof( CarId ), CarId.ToString() ).AppendLine();
+            builder.AppendFormat( "    {0} = {1}", nameof( OtherCarId ), OtherCarId.ToString() ).AppendLine();
+            builder.AppendFormat( "    {0} = {1}", nameof( Speed ), Speed.ToString() ).AppendLine();
+            builder.AppendFormat( "    {0} = {1}", nameof( WorldPosition ), WorldPosition.ToString() ).AppendLine();
+            builder.AppendFormat( "    {0} = {1}", nameof( RelativePosition ), RelativePosition.ToString() ).AppendLine();
+            builder.AppendFormat( "}}" ).AppendLine();
+            return builder.ToString();
+        }
     }
 }

@@ -30,5 +30,18 @@ namespace AcPluginLib.Protocol
                 Parsing.ReadAsciiString( br )
             );
         }
+
+        public override string ToString()
+        {
+            var builder = new System.Text.StringBuilder();
+            builder.AppendFormat( "{0} {{", nameof( ConnectionInfo ) ).AppendLine();
+            builder.AppendFormat( "    {0} = {1}", nameof( DriverName ), DriverName.ToString() ).AppendLine();
+            builder.AppendFormat( "    {0} = {1}", nameof( DriverGuid ), DriverGuid.ToString() ).AppendLine();
+            builder.AppendFormat( "    {0} = {1}", nameof( CarId ), CarId.ToString() ).AppendLine();
+            builder.AppendFormat( "    {0} = {1}", nameof( CarModel ), CarModel.ToString() ).AppendLine();
+            builder.AppendFormat( "    {0} = {1}", nameof( CarSkin ), CarSkin.ToString() ).AppendLine();
+            builder.AppendFormat( "}}" ).AppendLine();
+            return builder.ToString();
+        }
     }
 }

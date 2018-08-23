@@ -21,5 +21,15 @@ namespace AcPluginLib.Protocol
                 Parsing.ReadUnicodeString( br )
             );
         }
+
+        public override string ToString()
+        {
+            var builder = new System.Text.StringBuilder();
+            builder.AppendFormat( "{0} {{", nameof( ChatMessage ) ).AppendLine();
+            builder.AppendFormat( "    {0} = {1}", nameof( CarId ), CarId.ToString() ).AppendLine();
+            builder.AppendFormat( "    {0} = {1}", nameof( Message ), Message.ToString() ).AppendLine();
+            builder.AppendFormat( "}}" ).AppendLine();
+            return builder.ToString();
+        }
     }
 }

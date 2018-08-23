@@ -37,5 +37,18 @@ namespace AcPluginLib.Protocol
 
             return new LapCompletedInfo( id, laptime, cuts, board, grip );
         }
+
+        public override string ToString()
+        {
+            var builder = new System.Text.StringBuilder();
+            builder.AppendFormat( "{0} {{", nameof( LapCompletedInfo ) ).AppendLine();
+            builder.AppendFormat( "    {0} = {1}", nameof( CarId ), CarId.ToString() ).AppendLine();
+            builder.AppendFormat( "    {0} = {1}", nameof( LapTime ), LapTime.ToString() ).AppendLine();
+            builder.AppendFormat( "    {0} = {1}", nameof( Cuts ), Cuts.ToString() ).AppendLine();
+            builder.AppendFormat( "    {0} = {1}", nameof( Leaderboard ), Leaderboard.ToString() ).AppendLine();
+            builder.AppendFormat( "    {0} = {1}", nameof( GripLevel ), GripLevel.ToString() ).AppendLine();
+            builder.AppendFormat( "}}" ).AppendLine();
+            return builder.ToString();
+        }
     }
 }

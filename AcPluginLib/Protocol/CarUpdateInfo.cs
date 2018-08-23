@@ -33,5 +33,19 @@ namespace AcPluginLib.Protocol
                 br.ReadSingle()
             );
         }
+
+        public override string ToString()
+        {
+            var builder = new System.Text.StringBuilder();
+            builder.AppendFormat( "{0} {{", nameof( CarUpdateInfo ) ).AppendLine();
+            builder.AppendFormat( "    {0} = {1}", nameof( CarId ), CarId.ToString() ).AppendLine();
+            builder.AppendFormat( "    {0} = {1}", nameof( Position ), Position.ToString() ).AppendLine();
+            builder.AppendFormat( "    {0} = {1}", nameof( Velocity ), Velocity.ToString() ).AppendLine();
+            builder.AppendFormat( "    {0} = {1}", nameof( Gear ), Gear.ToString() ).AppendLine();
+            builder.AppendFormat( "    {0} = {1}", nameof( EngineRpm ), EngineRpm.ToString() ).AppendLine();
+            builder.AppendFormat( "    {0} = {1}", nameof( SplinePos ), SplinePos.ToString() ).AppendLine();
+            builder.AppendFormat( "}}" ).AppendLine();
+            return builder.ToString();
+        }
     }
 }
