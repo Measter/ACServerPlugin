@@ -73,56 +73,67 @@ namespace AcPluginLib
                 {
                     case ACSMessage.NewSession:
                         var nsInfo = SessionInfo.Parse( br );
+                        m_logger.Trace( "Packet contents: {0}", nsInfo );
                         foreach( var handler in m_handlers )
                             handler.OnNewSession( commander, nsInfo );
                         break;
                     case ACSMessage.NewConnection:
                         var ncInfo = ConnectionInfo.Parse( br );
+                        m_logger.Trace( "Packet contents: {0}", ncInfo );
                         foreach( var handler in m_handlers )
                             handler.OnNewConnection( commander, ncInfo );
                         break;
                     case ACSMessage.ConnectionClosed:
                         var ccInfo = ConnectionInfo.Parse( br );
+                        m_logger.Trace( "Packet contents: {0}", ccInfo );
                         foreach( var handler in m_handlers )
                             handler.OnConnectionClosed( commander, ccInfo );
                         break;
                     case ACSMessage.CarUpdate:
                         var cuInfo = CarUpdateInfo.Parse( br );
+                        m_logger.Trace( "Packet contents: {0}", cuInfo );
                         foreach( var handler in m_handlers )
                             handler.OnCarUpdate( commander, cuInfo );
                         break;
                     case ACSMessage.CarInfo:
                         var ciInfo = CarInfo.Parse( br );
+                        m_logger.Trace( "Packet contents: {0}", ciInfo );
                         foreach( var handler in m_handlers )
                             handler.OnCarInfo( commander, ciInfo );
                         break;
                     case ACSMessage.EndSession:
                         var esInfo = Parsing.ReadUnicodeString( br );
+                        m_logger.Trace( "Packet contents: {0}", esInfo );
                         foreach( var handler in m_handlers )
                             handler.OnEndSession( commander, esInfo );
                         break;
                     case ACSMessage.LapCompleted:
                         var lcInfo = LapCompletedInfo.Parse( br );
+                        m_logger.Trace( "Packet contents: {0}", lcInfo );
                         foreach( var handler in m_handlers )
                             handler.OnLapCompleted( commander, lcInfo );
                         break;
                     case ACSMessage.Version:
                         var version = br.ReadByte();
+                        m_logger.Trace( "Packet contents: {0}", version );
                         foreach( var handler in m_handlers )
                             handler.OnProtocolVersion( commander, version );
                         break;
                     case ACSMessage.Chat:
                         var chat = ChatMessage.Parse( br );
+                        m_logger.Trace( "Packet contents: {0}", chat );
                         foreach( var handler in m_handlers )
                             handler.OnChatMessage( commander, chat );
                         break;
                     case ACSMessage.ClientLoaded:
                         var clId = br.ReadByte();
+                        m_logger.Trace( "Packet contents: {0}", clId );
                         foreach( var handler in m_handlers )
                             handler.OnClientLoaded( commander, clId );
                         break;
                     case ACSMessage.SessionInfo:
                         var siInfo = SessionInfo.Parse( br );
+                        m_logger.Trace( "Packet contents: {0}", siInfo );
                         foreach( var handler in m_handlers )
                             handler.OnSessionInfo( commander, siInfo );
                         break;
@@ -134,6 +145,7 @@ namespace AcPluginLib
                         break;
                     case ACSMessage.ClientEvent:
                         var ceInfo = ClientEventInfo.Parse( br );
+                        m_logger.Trace( "Packet contents: {0}", ceInfo );
                         foreach( var handler in m_handlers )
                             handler.OnClientEvent( commander, ceInfo );
                         break;
