@@ -21,6 +21,7 @@ namespace KunosExample
             );
 
             var server = new Server( cfg );
+            var driverDB = server.GetDriverHandler();
             server.AddEventHandler( new PrintHandler() );
             server.AddEventHandler( new ResponseHandler() );
 
