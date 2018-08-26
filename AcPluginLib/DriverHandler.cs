@@ -21,6 +21,16 @@ namespace AcPluginLib
         {
             return m_handler.TryGetDriverByID( id, out driver );
         }
+
+        public Dictionary<byte, Driver>.ValueCollection GetAllConnectedDrivers()
+        {
+            return m_handler.GetConnectedDrivers();
+        }
+
+        public Dictionary<string, Driver>.ValueCollection GetAllDrivers()
+        {
+            return m_handler.GetAllDrivers();
+        }
     }
 
     internal class DriverHandler : ACEventHandler
@@ -194,6 +204,16 @@ namespace AcPluginLib
         public bool TryGetDriverByID( byte id, out Driver driver )
         {
             return m_driversFromID.TryGetValue( id, out driver );
+        }
+
+        public Dictionary<string, Driver>.ValueCollection GetAllDrivers()
+        {
+            return m_driversFromGUID.Values;
+        }
+
+        public Dictionary<byte, Driver>.ValueCollection GetConnectedDrivers()
+        {
+            return m_driversFromID.Values;
         }
     }
 }
