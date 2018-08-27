@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Sockets;
@@ -70,7 +70,7 @@ namespace AcPluginLib
                 commandThread.Start();
             }
 
-            var recievePoint = m_config.Server.CommandPoint;
+            var recievePoint = m_config.Server.DataPort;
             m_logger.Debug( "Creating Commander" );
             var commander = new Commander( server, m_config.Server );
 
