@@ -54,6 +54,15 @@ namespace AcPluginLib
 
         public void Run()
         {
+            m_logger.Info( "Running server plugin:" );
+            m_logger.Info( "Server Data Port: {0}", m_config.Server.DataPort );
+            m_logger.Info( "Server Command Port: {0}", m_config.Server.CommandPoint );
+            if( m_config.Forward.HasValue )
+            {
+                m_logger.Info( "Forward Data Port: {0}", m_config.Forward.Value.DataPort );
+                m_logger.Info( "Forward Command Port: {0}", m_config.Forward.Value.CommandPoint );
+            }
+
             m_logger.Info( "Opening UDP client at {0}", m_config.Server.DataPort );
             var server = new UdpClient( m_config.Server.DataPort );
 
@@ -206,6 +215,7 @@ namespace AcPluginLib
                 {
                     m_logger.Debug( "Awaiting message to forward." );
                     var bytes = forwardClient.Receive( ref recievePoint );
+                    m_logger.Trace( "Forwarding packet with ID {0}", bytes[0] );
                     server.Send( bytes, bytes.Length, m_config.Server.CommandPoint );
                     m_logger.Debug( "Message forwarded" );
                 }
