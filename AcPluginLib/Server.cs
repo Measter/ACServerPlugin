@@ -189,7 +189,7 @@ namespace AcPluginLib
         {
             if( m_config.Forward != null )
             {
-                m_logger.Debug( "Opening forawding client to {0}", m_config.Forward.Value.CommandPoint );
+                m_logger.Debug( "Opening forwarding client to {0}", m_config.Forward.Value.CommandPoint );
                 var forwardClient = new UdpClient(m_config.Forward.Value.CommandPoint);
 
                 if( m_config.SuppressSocketError )
