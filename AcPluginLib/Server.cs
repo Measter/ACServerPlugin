@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Sockets;
@@ -88,7 +88,8 @@ namespace AcPluginLib
                 }
                 
                 var br = new BinaryReader( new MemoryStream( bytes ) );
-                var packetType = (ACSMessage) br.ReadByte();
+                var rawPacketID = br.ReadByte();
+                var packetType = (ACSMessage) rawPacketID;
                 m_logger.Debug( "Packet type: {0}", packetType );
 
                 if( !m_isKnownSession && packetType != ACSMessage.SessionInfo && packetType != ACSMessage.NewSession )
@@ -180,7 +181,8 @@ namespace AcPluginLib
                             handler.OnClientEvent( commander, ceInfo );
                         break;
                     default:
-                        throw new ArgumentOutOfRangeException();
+                        m_logger.Error( "Received invalid packet ID: {0}",  rawPacketID );
+                        break;
                 }
             }
         }
