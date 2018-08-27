@@ -11,14 +11,33 @@ namespace KunosExample
         static void Main( string[] args )
         {
             var ip = IPAddress.Parse( "127.0.0.1" );
-            var cfg = new Config(
-                new ServerPoint(
-                    new IPEndPoint( ip, 11001 ),
-                    new IPEndPoint( ip, 12001 )
-                ), 
-                null,
-                true
-            );
+            Config cfg;
+
+            if( args.Length > 0 )
+            {
+                cfg = new Config(
+                    new ServerPoint(
+                        new IPEndPoint( ip, 11001 ),
+                        new IPEndPoint( ip, 12001 )
+                    ), 
+                    new ServerPoint(
+                        new IPEndPoint( ip, 11101 ),
+                        new IPEndPoint( ip, 12101 )
+                    ),
+                    true
+                );
+            }
+            else
+            {
+                cfg = new Config(
+                    new ServerPoint(
+                        new IPEndPoint( ip, 11101 ),
+                        new IPEndPoint( ip, 12101 )
+                    ), 
+                    null,
+                    true
+                );
+            }
 
             var server = new Server( cfg );
             var driverDB = server.GetDriverHandler();
