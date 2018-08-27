@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Sockets;
@@ -65,7 +65,7 @@ namespace AcPluginLib
 
             if( m_config.Forward.HasValue )
             {
-                m_logger.Info( "Enabling forwarding from {0}", m_config.Forward.Value.CommandPoint );
+                m_logger.Info( "Enabling forwarding thread" );
                 var commandThread = new Thread( () => CommandForwardTask( server ) );
                 commandThread.Start();
             }
@@ -191,7 +191,7 @@ namespace AcPluginLib
         {
             if( m_config.Forward != null )
             {
-                m_logger.Debug( "Opening forwarding client to {0}", m_config.Forward.Value.CommandPoint );
+                m_logger.Debug( "Opening forwarding client from {0} to {1}", m_config.Forward.Value.CommandPoint, m_config.Server.CommandPoint );
                 var forwardClient = new UdpClient(m_config.Forward.Value.CommandPoint);
 
                 if( m_config.SuppressSocketError )
