@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Sockets;
@@ -26,6 +26,13 @@ namespace AcPluginLib
         public Server( Config config )
         {
             m_config = config;
+
+            if( m_config.Server.CommandPoint.Port == m_config.Server.DataPort.Port )
+                throw new ArgumentException( "Server Command and Data ports cannot be the same", nameof( config ) );
+
+            if( m_config.Forward.HasValue && m_config.Forward.Value.CommandPoint.Port == m_config.Forward.Value.DataPort.Port )
+                throw new ArgumentException( "Forward Command and Data ports cannot be the same", nameof( config ) );
+
             m_driverHandler = new DriverHandler();
             m_driverDB = new DriverDB( m_driverHandler );
         }
