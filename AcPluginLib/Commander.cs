@@ -221,7 +221,7 @@ namespace AcPluginLib
             using( var bw = new BinaryWriter( new MemoryStream( buffer ) ) )
             {
                 bw.Write( (byte)ACSCommand.BroadcastChat );
-                var trimmedMessage = message.Substring( Math.Min( 63, message.Length ) );
+                var trimmedMessage = message.Substring( 0, Math.Min( 63, message.Length ) );
                 WriteUnicodeString( bw, trimmedMessage );
 
                 m_server.Send( buffer, (int)bw.BaseStream.Length, m_config.CommandPoint );
