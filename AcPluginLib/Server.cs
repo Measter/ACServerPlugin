@@ -65,6 +65,7 @@ namespace AcPluginLib
 
             m_logger.Info( "Opening UDP client at {0}", m_config.Server.DataPort );
             var server = new UdpClient( m_config.Server.DataPort );
+            UdpClient forwardClient = null;
 
             if( m_config.SuppressSocketError )
             {
@@ -74,8 +75,17 @@ namespace AcPluginLib
 
             if( m_config.Forward.HasValue )
             {
+                m_logger.Debug( "Opening forwarding client from {0} to {1}", m_config.Forward.Value.CommandPoint, m_config.Server.CommandPoint );
+                forwardClient = new UdpClient(m_config.Forward.Value.CommandPoint);
+
+                if( m_config.SuppressSocketError )
+                {
+                    m_logger.Debug( "Suppressing socket error for forwarding client" );
+                    SuppressSocketError( forwardClient );
+                }
+
                 m_logger.Info( "Enabling forwarding thread" );
-                var commandThread = new Thread( () => CommandForwardTask( server ) );
+                var commandThread = new Thread( () => CommandForwardTask( server, forwardClient ) );
                 commandThread.Start();
             }
 
@@ -90,10 +100,10 @@ namespace AcPluginLib
                 var bytes = server.Receive( ref recievePoint );
                 m_logger.Debug( "Recieved data packet." );
 
-                if( m_config.Forward.HasValue )
+                if( m_config.Forward.HasValue && forwardClient != null )
                 {
                     m_logger.Debug( "Forwarding data packet" );
-                    server.Send( bytes, bytes.Length, m_config.Forward.Value.DataPort );
+                    forwardClient.Send( bytes, bytes.Length, m_config.Forward.Value.DataPort );
                 }
                 
                 var br = new BinaryReader( new MemoryStream( bytes ) );
@@ -196,19 +206,10 @@ namespace AcPluginLib
             }
         }
 
-        private void CommandForwardTask( UdpClient server )
+        private void CommandForwardTask( UdpClient server, UdpClient forwardClient )
         {
             if( m_config.Forward != null )
             {
-                m_logger.Debug( "Opening forwarding client from {0} to {1}", m_config.Forward.Value.CommandPoint, m_config.Server.CommandPoint );
-                var forwardClient = new UdpClient(m_config.Forward.Value.CommandPoint);
-
-                if( m_config.SuppressSocketError )
-                {
-                    m_logger.Debug( "Suppressing socket error for forwarding client" );
-                    SuppressSocketError( forwardClient );
-                }
-
                 var recievePoint = m_config.Forward.Value.CommandPoint;
 
                 while( true )
