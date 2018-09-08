@@ -72,6 +72,18 @@ namespace AcPluginLib
             m_driversFromID[info.CarId] = driver;
         }
 
+        public override void OnProtocolVersion( Commander cmdr, byte version )
+        {
+            // The first packet the server sends on startup is the protocol version.
+            // If we get this, that means the server has just been started, and we need
+            // to mark all drivers as disconnected.
+
+            foreach( Driver driver in m_driversFromID.Values )
+                driver.IsConnected = false;
+
+            m_driversFromID.Clear();
+        }
+
         public override void OnCarUpdate( Commander cmdr, CarUpdateInfo info )
         {
             if( !TryGetDriverByID( info.CarId, out Driver driver ) )
