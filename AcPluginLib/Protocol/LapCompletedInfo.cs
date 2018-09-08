@@ -45,8 +45,14 @@ namespace AcPluginLib.Protocol
             builder.AppendFormat( "    {0} = {1}", nameof( CarId ), CarId.ToString() ).AppendLine();
             builder.AppendFormat( "    {0} = {1}", nameof( LapTime ), LapTime.ToString() ).AppendLine();
             builder.AppendFormat( "    {0} = {1}", nameof( Cuts ), Cuts.ToString() ).AppendLine();
-            builder.AppendFormat( "    {0} = {1}", nameof( Leaderboard ), Leaderboard.ToString() ).AppendLine();
             builder.AppendFormat( "    {0} = {1}", nameof( GripLevel ), GripLevel.ToString() ).AppendLine();
+            builder.AppendFormat( "    Leaderboard: " );
+            for( var i = 0; i < Leaderboard.Count; i++ )
+            {
+                LeaderboardEntry entry = Leaderboard[i];
+                builder.AppendFormat( "    - {0}: {1}", i, entry).AppendLine();
+            }
+
             builder.AppendFormat( "}}" ).AppendLine();
             return builder.ToString();
         }
