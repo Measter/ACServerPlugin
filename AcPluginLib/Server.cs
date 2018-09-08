@@ -111,7 +111,7 @@ namespace AcPluginLib
                 var packetType = (ACSMessage) rawPacketID;
                 m_logger.Debug( "Packet type: {0}", packetType );
 
-                if( !m_isKnownSession && packetType != ACSMessage.SessionInfo && packetType != ACSMessage.NewSession )
+                if( !m_isKnownSession && packetType != ACSMessage.Version && packetType != ACSMessage.SessionInfo && packetType != ACSMessage.NewSession )
                 {
                     m_logger.Info( "Unknown session, requesting info." );
                     commander.GetSessionInfoCurrent();
