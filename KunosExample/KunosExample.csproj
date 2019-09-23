@@ -51,7 +51,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AcPluginLib\AcPluginLib.csproj">
-      <Project>{571b5302-b171-47df-b6be-c7d4f46e21da}</Project>
+      <Project>{85c470c1-0316-46ec-800f-43eb7936702c}</Project>
       <Name>AcPluginLib</Name>
     </ProjectReference>
   </ItemGroup>
