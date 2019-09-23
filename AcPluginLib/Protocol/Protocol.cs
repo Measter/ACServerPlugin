@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Text;
-using AcPluginLib.Protocol;
 
 namespace AcPluginLib
 {
@@ -52,7 +51,13 @@ namespace AcPluginLib
         Race = 3
     }
 
-    internal class Parsing
+    public enum ForwardHandling
+    {
+        Forward,
+        Block,
+    }
+
+    public class Parsing
     {
         internal static string ReadAsciiString( BinaryReader br )
         {
@@ -64,6 +69,36 @@ namespace AcPluginLib
         {
             byte length = br.ReadByte();
             return Encoding.UTF32.GetString( br.ReadBytes( length * 4 ) );
+        }
+
+        public static ACSCommand ReadCommandId( byte id )
+        {
+            switch( id )
+            {
+                case 200:
+                    return ACSCommand.RealtimeposInterval;
+                case 201:
+                    return ACSCommand.GetCarInfo;
+                case 202:
+                    return ACSCommand.SendChat;
+                case 203:
+                    return ACSCommand.BroadcastChat;
+                case 204:
+                    return ACSCommand.GetSessionInfo;
+                case 205:
+                    return ACSCommand.SetSessionInfo;
+                case 206:
+                    return ACSCommand.KickUser;
+                case 207:
+                    return ACSCommand.NextSession;
+                case 208:
+                    return ACSCommand.RestartSession;
+                case 209:
+                    return ACSCommand.AdminCommand;
+
+                default:
+                    throw new ArgumentOutOfRangeException( nameof( id ) );
+            }
         }
     }
 }

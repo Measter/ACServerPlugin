@@ -17,6 +17,7 @@ namespace AcPluginLib
 
         private readonly Config m_config;
         private readonly List<ACEventHandler> m_handlers = new List<ACEventHandler>();
+        private readonly List<IACForwardHandler> m_forwardHanders = new List<IACForwardHandler>();
 
         private readonly DriverDB m_driverDB;
         private readonly DriverHandler m_driverHandler;
@@ -50,6 +51,13 @@ namespace AcPluginLib
             m_logger.Debug( "Adding event handler: {0}", handler );
             if( handler == null ) throw new ArgumentNullException( nameof( handler ) );
             m_handlers.Add( handler );
+        }
+
+        public void AddForwardHandler( IACForwardHandler handler )
+        {
+            m_logger.Debug( "Adding forward handler: {0}", handler );
+            if( handler == null ) throw new ArgumentNullException( nameof( handler ) );
+            m_forwardHanders.Add( handler );
         }
 
         public void Run()
@@ -216,6 +224,31 @@ namespace AcPluginLib
                 {
                     m_logger.Debug( "Awaiting message to forward." );
                     var bytes = forwardClient.Receive( ref recievePoint );
+
+                    try
+                    {
+                        var packetId = Parsing.ReadCommandId(bytes[0]);
+
+                        bool didBlock = false;
+
+                        foreach( var handler in m_forwardHanders )
+                        {
+                            if( handler.OnForward( packetId, bytes ) == ForwardHandling.Block ) 
+                            {
+                                m_logger.Debug( "Handler {0} blocked forwarding.", handler );
+                                didBlock = true;
+                                break;
+                            }
+                        }
+
+                        if( didBlock )
+                            continue;
+                    }
+                    catch( ArgumentOutOfRangeException )
+                    {
+                        m_logger.Error( "Received invalid packet id: {0}", bytes[0] );
+                    }
+
                     m_logger.Trace( "Forwarding packet with ID {0}", bytes[0] );
                     server.Send( bytes, bytes.Length, m_config.Server.CommandPoint );
                     m_logger.Debug( "Message forwarded" );
